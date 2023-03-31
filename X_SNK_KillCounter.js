@@ -1,7 +1,7 @@
 //_X_SNK_KillCounter.js
 /*:
  * @target MZ
- * @plugindesc [v1.2] Enemy Kill Counter
+ * @plugindesc [v1.3] Enemy Kill Counter
  * @author SnakekillerX
  * @url https://github.com/SnakekillerX/RPG-Maker-MZ
  *
@@ -9,7 +9,7 @@
  * 
  * ############################################################################
  * \   \   \   \   \   \       Kill Counter      /   /   /   /   /   /   /   /
- *  \   \   \   \   \   \       Version 1.2     /   /   /   /   /   /   /   /
+ *  \   \   \   \   \   \       Version 1.3     /   /   /   /   /   /   /   /
  * ############################################################################
  * Author: SnakekillerX 
  * Please credit if used.
@@ -22,12 +22,21 @@
  *
  * Usage:
  * Check the condition of kill/death counts by using a conditional branch.
+ *
+ * //Kill Counter
  * $killCounter.party[EnemyID]    
  * (The party has collectively killed this many of [EnemyID])
+ *
+ * $killCounter.partyTotal
+ * (A sum of all the enemies the party has killed)
  *
  * $killCounter.actor[ActorID][EnemyID]    
  * ([ActorID] has killed this many [EnemyID]'s)
  *
+ * $killCounter.actorTotal[ActorID]
+ * (A sum of all the enemies [ActorID] has killed)
+ *
+ * //Death Counter
  * $deathCounter.party 
  * (The party has died this many times collectively)
  *
@@ -85,7 +94,7 @@
  * ◆
  * ：Else
  * ◆Text：None, None, Window, Bottom
- * ：    ：Looks like you've take casualties.  Please see the healer for assistance.
+ * ：    ：Looks like you've taken casualties.  Please see the healer for assistance.
  * ◆
  * ：End
  *
@@ -100,6 +109,10 @@
  * =========================
  * Changelog
  * =========================
+ * [v1.3] - Update Mar 31st 2023
+ * Added "Party Total Kills"
+ * Added specific "Actor Total Kills"
+ *
  * [v1.2] - Update Mar 30th 2023
  * Added "Party Kill Counter"
  * Added "Party Death Counter"
@@ -121,13 +134,15 @@
  * 
  */
 
+//Initialize Object
 $killCounter = {}
 $killCounter.party = []
 $killCounter.actor = []
+$killCounter.actorTotal = []
 $deathCounter = {}
-$deathCounter.party = 0
 $deathCounter.actor = []
-	
+
+//New Game
 const Alias_DataManager_createGameObjects = DataManager.createGameObjects;
 DataManager.createGameObjects = function() {
 	Alias_DataManager_createGameObjects.call(this)
@@ -135,9 +150,12 @@ DataManager.createGameObjects = function() {
 	for (let i = 1; i < $dataEnemies.length; i++) {
 	$killCounter.party[i] = 0
 	}
+	$killCounter.partyTotal = 0
 	$deathCounter.party = 0
 	for (let j = 1; j < $dataActors.length; j++) {
+	//initialize actor values
 	$killCounter.actor[j] = []
+	$killCounter.actorTotal[j] = 0
 	$deathCounter.actor[j] = 0
 		for (let k = 1; k < $dataEnemies.length; k++) {
 		$killCounter.actor[j][k] = 0
@@ -145,6 +163,7 @@ DataManager.createGameObjects = function() {
 	}
 };
 
+//Battler Death
 const Alias_Game_BattlerBase_Die = Game_BattlerBase.prototype.die;
 Game_BattlerBase.prototype.die = function() {
 	Alias_Game_BattlerBase_Die.call(this);
@@ -153,6 +172,8 @@ Game_BattlerBase.prototype.die = function() {
 		$killCounter.party[this._enemyId] ++
 		if($gameTemp._lastActionData[2] != 0){
 		$killCounter.actor[$gameTemp._lastActionData[2]][this._enemyId] ++
+		$killCounter.actorTotal[$gameTemp._lastActionData[2]] ++
+		$killCounter.partyTotal ++
 		}
 	}else{
 		//Actor Died
@@ -161,14 +182,18 @@ Game_BattlerBase.prototype.die = function() {
 	}
 };
 
+//File Save
 const Alias_DataManager_makeSaveContents = DataManager.makeSaveContents;
 DataManager.makeSaveContents = function() {
     const contents = Alias_DataManager_makeSaveContents.call(this);
 	contents.killCounter = $killCounter;
-	contents.deathCounter = $deathCounter
+	contents.deathCounter = $deathCounter;
+	contents.killCounter.party = $killCounter.party;
+	contents.killCounter.actor = $killCounter.actor;
     return contents;
 };
 
+//File Load
 const Alias_DataManager_extractSaveContents = DataManager.extractSaveContents;
 DataManager.extractSaveContents = function(contents) {
 	Alias_DataManager_extractSaveContents.call(this, contents);
