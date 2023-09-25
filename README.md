@@ -8,6 +8,7 @@ Feel free to use them as your projects if you find them useful.
 I'm very active in RPG Maker MZ at the moment ~~so expect more to come.~~
 
 Update: Sept 24th 2023
+
 I'm still very active in RPG Maker MZ, but have steered away from making plugins with changeable parameters.
 It takes a lot of extra time to set them up so most of my plugins are taylored to my own project.
 
