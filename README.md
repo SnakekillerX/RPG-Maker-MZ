@@ -13,4 +13,4 @@ I'm still very active in RPG Maker MZ, but have steered away from making plugins
 It takes a lot of extra time to set them up so most of my plugins are tailored to my own project.
 
 That being said, some plugins are perfectly usable still for other projects, however options will
-mostly be controled through script, rather than plugin parameters.
+mostly be controlled through script, rather than plugin parameters.
