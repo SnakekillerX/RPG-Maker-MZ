@@ -1,13 +1,13 @@
 /*:
  * @target MZ
  * @author SnakekillerX
- * @plugindesc [v1.0] Suppresses Update Function on Chosen Events.
+ * @plugindesc [v1.1] Suppresses Update Function on Chosen Events.
  * @url https://github.com/SnakekillerX/RPG-Maker-MZ
  *
  * @help
  * 
  * ############################################################################
- * \   \   \                     Skip Update v1.0                     /   /   /   
+ * \   \   \                     Skip Update v1.1                     /   /   /   
  * ############################################################################
  *
  * Authors: SnakekillerX made in collaboration with The Ninefold Spirit Dev
@@ -34,6 +34,8 @@
  * =========================
  * Changelog
  * =========================
+ * [v1.1] - Updated to remove metadata copying from $dataMap and use .event().meta instead
+ *
  * [v1.0] - Created on June 19th - 2025
  * 
  *
@@ -44,18 +46,10 @@
  *
  */
 
-//Forward $dataMap.event note and meta data to $gameMap.event
-const Alias_X_SNK_CopyNoteTags_Game_Event_initialize = Game_Event.prototype.initialize;
-Game_Event.prototype.initialize = function(mapId, eventId) {
-	this.note = $dataMap.events[eventId].note;
-	this.meta = $dataMap.events[eventId].meta;
-	Alias_X_SNK_CopyNoteTags_Game_Event_initialize.call(this, mapId, eventId);
-};
-
 //Disables Events With <SkipUpdate> Note Tag From Processing
 const Alias_SkipUpdate_Game_Event_update = Game_Event.prototype.update;
 Game_Event.prototype.update = function() {
-    if(!this.meta["SkipUpdate"]){
-        Alias_SkipUpdate_Game_Event_update.call(this);
-    }
+	if(this.event() && this.event().meta && !this.event().meta["SkipUpdate"]){
+		Alias_SkipUpdate_Game_Event_update.call(this);
+	}
 };
