@@ -2,13 +2,13 @@
 /*:
  * @target MZ
  * @author SnakekillerX
- * @plugindesc [v1.3] Suppresses Update Function on Chosen Events.
+ * @plugindesc [v1.4] Suppresses Update Function on Chosen Events.
  * @url https://github.com/SnakekillerX/RPG-Maker-MZ
  *
  * @help
  * 
  * ############################################################################
- * \   \   \                     Skip Update v1.3                     /   /   /   
+ * \   \   \                   Skip Update v1.4                     /   /   /   
  * ############################################################################
  *
  * Authors: SnakekillerX made in collaboration with The Ninefold Spirit Dev
